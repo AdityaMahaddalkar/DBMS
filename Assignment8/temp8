@@ -1,0 +1,66 @@
+ create table alumni2(rollno int, name varchar2(20), dateofadmission date, branch varchar2(20), percent real, status int);
+
+------------For row-------------------
+
+create or replace trigger tr1 before update on student2 for each row when(:new.status0)
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr2 before delete on student2 for each row when(new.rollno>0)
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr3 after update on student2 for each row when(new.rollno>0)
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr4 after delete on student2 for each row when(new.rollno>0)
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+-------------For column--------------
+
+
+create or replace trigger tr5 before update on student2
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr6 before delete on student2
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr3 after update on student2
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+create or replace trigger tr4 after delete on student2
+declare
+begin
+insert into alumni2 values(:old.rollno, :old.name, :old.dateofadmission, :old.branch, :old.percent, :old.status);
+end;
+/
+
+--------------------------- rough
+
+
