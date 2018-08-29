@@ -1,0 +1,131 @@
+
+
+create or replace 
+  procedure my_proc(icust_id int) as
+  cname varchar2(20);
+  ctotal int;
+  begin
+  select name, total_purchase into cname, ctotal from te3142_customer2 where cust_id=icust_id;
+  if (ctotal<20000 and ctotal>=10000) then
+  insert into te3142_category values(icust_id, cname, 'Platinum');
+  elsif (ctotal<10000 and ctotal>=5000) then
+  insert into te3142_category values(icust_id, cname, 'Gold');
+  elsif (ctotal<5000 and ctotal>=2000) then
+  insert into te3142_category values(icust_id, cname, 'Silver');
+  end if;
+  Exception
+  when others then
+  dbms_output.put_line('Error occurred');
+  end;
+  /
+
+
+o/p
+
+QL> create or replace 
+  procedure my_proc(icust_id int) as
+  cname varchar(20);
+  ctotal int;
+  begin
+  select name, total into cname, ctotal from customer2 where cust_id=icust_id;
+  if (ctotal<20000 and ctotal>=10000) then
+  insert into category2 values(icust_id, cname, 'Platinum');
+  elsif (ctotal<10000 and ctotal>=5000) then
+  insert into category2 values(icust_id, cname, 'Gold');
+  elsif (ctotal<5000 and ctotal>=2000) then
+  insert into category2 values(icust_id, cname, 'Silver');
+  end if;
+  end;
+  /  2    3    4    5    6    7    8    9   10   11   12   13   14   15  
+
+Procedure created.
+
+SQL> select * from customer2;
+
+   CUST_ID NAME 		     TOTAL
+---------- -------------------- ----------
+      1234 Aditya		      4000
+      3324 Amey 		     14000
+
+SQL> exec my_proc(3324);
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from category2;
+
+   CUST_ID NAME 		CLASS
+---------- -------------------- --------------------
+      3324 Amey 		Platinum
+
+SQL> insert into customer2 values(4495, 'Kotalwar', 2000);
+
+1 row created.
+
+SQL> exec my_proc(3324);
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from customer2;
+
+   CUST_ID NAME 		     TOTAL
+---------- -------------------- ----------
+      1234 Aditya		      4000
+      3324 Amey 		     14000
+      4495 Kotalwar		      2000
+
+SQL> select * from category2;
+
+   CUST_ID NAME 		CLASS
+---------- -------------------- --------------------
+      3324 Amey 		Platinum
+      3324 Amey 		Platinum
+
+SQL> truncate table category2;
+
+Table truncated.
+
+SQL> alter table category2 add primary key(cust_id);
+
+Table altered.
+
+SQL> exec my_proc(3324);
+
+PL/SQL procedure successfully completed.
+
+SQL> exec my_proc(3324);
+BEGIN my_proc(3324); END;
+
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C007020) violated
+ORA-06512: at "SYSTEM.MY_PROC", line 7
+ORA-06512: at line 1
+
+
+SQL> create or replace 
+  procedure my_proc(icust_id int) as
+  cname varchar(20);
+  ctotal int;
+  begin
+  select name, total into cname, ctotal from customer2 where cust_id=icust_id;
+  if (ctotal<20000 and ctotal>=10000) then
+  insert into category2 values(icust_id, cname, 'Platinum');
+  elsif (ctotal<10000 and ctotal>=5000) then
+  insert into category2 values(icust_id, cname, 'Gold');
+  elsif (ctotal<5000 and ctotal>=2000) then
+  insert into category2 values(icust_id, cname, 'Silver');
+  end if;
+  Exception
+  when others then
+  dbms_output.put_line('Error occurred');
+  end;
+  /
+  2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18  
+Procedure created.
+
+SQL> exec my_proc(3324);
+Error occurred
+
+PL/SQL procedure successfully completed.
+
+
