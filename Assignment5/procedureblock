@@ -1,0 +1,27 @@
+declare       
+input_name varchar2(20);
+input_number number(3);
+date1 date;
+amt number;
+days number;
+status_out number;
+begin
+input_name := '&name';
+input_number := &number;
+select status into status_out from te3149_customer where input_number=customer_id and input_name=name;
+select date_of_payment into date1 from te3149_customer where input_number=customer_id and input_name=name;
+select trunc(sysdate) - date1 into days from dual;
+amt := 1;
+if(status_out=0) then
+dbms_output.put_line('Already paid');
+elsif (days>30) then
+insert into te3149_fine values(input_number, date1, days*50);
+update te3149_customer set status=0 where customer_id=input_number;
+elsif (days<30 and days>15) then
+insert into te3149_fine values(input_number, date1, days*5);
+update te3149_customer set status=0 where customer_id=input_number;
+elsif(days<15) then
+dbms_output.put_line('No fine');
+end if;
+end;
+/
