@@ -1,0 +1,532 @@
+[pict@localhost ~]$ mysql -h 10.10.15.202 -u te3149 -p;
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 352
+Server version: 5.5.43-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use te3149
+ERROR 1044 (42000): Access denied for user 'te3149'@'%' to database 'te3149'
+MariaDB [(none)]> use te3149db
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [te3149db]> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MariaDB [te3149db]> show tables;
++--------------------+
+| Tables_in_te3149db |
++--------------------+
+| author             |
+| book               |
+| class              |
+| customer           |
+| order1             |
+| publisher          |
++--------------------+
+6 rows in set (0.00 sec)
+
+
+1. Find Customer details and order details using NATURAL JOIN.
+
+MariaDB [te3149db]> select * from customer;
++------+----------+------------+----------+
+| cid  | name     | city       | class_id |
++------+----------+------------+----------+
+| 1338 | aditya   | Pune       |        3 |
+| 1383 | mandar   | Pune       |        2 |
+| 1482 | sanket   | Pune       |        3 |
+| 1992 | shruti   | Ahmedabad  |        2 |
+| 2234 | prajakta | Pune       |        2 |
+| 2343 | pratik   | Pune       |        3 |
+| 4238 | amey     | Pune       |        3 |
+| 8823 | daksh    | Pune       |        1 |
+| 8888 | Blah     | Pune       |        1 |
+| 9999 | rajan    | Ahmednagar |        1 |
++------+----------+------------+----------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select * from customer natural join order1;
++------+----------+-----------+----------+----------+------+------+------------+
+| cid  | name     | city      | class_id | order_no | isbn | qty  | date1      |
++------+----------+-----------+----------+----------+------+------+------------+
+| 1338 | aditya   | Pune      |        3 |        2 | 5565 |    2 | 2018-10-10 |
+| 1383 | mandar   | Pune      |        2 |        3 | 5565 |   10 | 2018-08-20 |
+| 1482 | sanket   | Pune      |        3 |        4 | 5572 |   15 | 2018-04-20 |
+| 1992 | shruti   | Ahmedabad |        2 |        5 | 5568 |    1 | 2014-04-20 |
+| 2324 | jay      | Mumbai    |        1 |        6 | 5570 |    2 | 2014-09-14 |
+| 2343 | pratik   | Pune      |        3 |        7 | 5570 |    2 | 2014-09-14 |
+| 8823 | daksh    | Pune      |        1 |        8 | 5598 |   10 | 2014-09-14 |
+| 4238 | amey     | Pune      |        3 |        9 | 5571 |   13 | 2014-10-01 |
+| 2234 | prajakta | Pune      |        2 |       10 | 5572 |    3 | 2016-10-01 |
++------+----------+-----------+----------+----------+------+------+------------+
+9 rows in set (0.00 sec)
+
+//
+
+2. Find the book_ title, author_name, country. (INNER JOIN)
+
+MariaDB [te3149db]> select * from author;
++---------+------------+---------+
+| auth_id | aname      | country |
++---------+------------+---------+
+|      10 | JKRowling  | England |
+|      20 | S. Hawking | England |
+|      30 | Amish T.   | Brazil  |
+|      40 | Chetan B.  | Brazil  |
+|      50 | Dan Brown  | Brazil  |
+|      60 | John G.    | England |
+|      70 | HELLO      | USA     |
+|      80 | HELLO      | USA     |
+|      90 | HELLO      | USA     |
+|     100 | Micheal W. | Canada  |
++---------+------------+---------+
+10 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select book.title, author.aname, author.country from book inner join author on author.auth_id = book.auth_id;
++---------------------+------------+---------+
+| title               | aname      | country |
++---------------------+------------+---------+
+| B. history of time  | S. Hawking | England |
+| Br. history of time | S. Hawking | England |
+| Mystery             | John G.    | England |
+| Flattered           | John G.    | England |
+| Delimiter           | S. Hawking | England |
+| Fire                | HELLO      | USA     |
+| Water               | Micheal W. | Canada  |
+| H P                 | JKRowling  | England |
+| Secret              | HELLO      | USA     |
+| Oath of V.          | Chetan B.  | Brazil  |
++---------------------+------------+---------+
+10 rows in set (0.00 sec)
+
+
+
+3. Find the customer ID, name and order_no of customers who have never placed an order. (LEFT/RIGHT)
+
+
+
+MariaDB [te3149db]> select * from customer;
++------+----------+------------+----------+
+| cid  | name     | city       | class_id |
++------+----------+------------+----------+
+| 1338 | aditya   | Pune       |        3 |
+| 1383 | mandar   | Pune       |        2 |
+| 1482 | sanket   | Pune       |        3 |
+| 1992 | shruti   | Ahmedabad  |        2 |
+| 2234 | prajakta | Pune       |        2 |
+| 2343 | pratik   | Pune       |        3 |
+| 4238 | amey     | Pune       |        3 |
+| 8823 | daksh    | Pune       |        1 |
+| 8888 | Blah     | Pune       |        1 |
+| 9999 | rajan    | Ahmednagar |        1 |
++------+----------+------------+----------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select t.cid, t.name, t.order_no from (select customer.cid, customer.name, order1.order_no from customer left outer join order1 on customer.cid = order1.cid) as t where t.order_no is null;
++------+-------+----------+
+| cid  | name  | order_no |
++------+-------+----------+
+| 8888 | Blah  |     NULL |
+| 9999 | rajan |     NULL |
++------+-------+----------+
+2 rows in set (0.00 sec)
+
+
+//
+4. Find the Title, ISBN, order_no of the books for which order is not placed. (LEFT/RIGHT)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select b.title, b.isbn, b.order_no from (select book.title, book.isbn, order1.order_no from book left outer join order1 on book.isbn = order1.isbn) as b where b.order_no is null;
++--------------------+------+----------+
+| title              | isbn | order_no |
++--------------------+------+----------+
+| B. history of time | 5564 |     NULL |
+| Mystery            | 5567 |     NULL |
+| Delimiter          | 5569 |     NULL |
+| Secret             | 5573 |     NULL |
++--------------------+------+----------+
+4 rows in set (0.00 sec)
+
+//
+5. Display cust_fname, title,author_no,publisher_year where ISBN=1234. (JOINING more than 2 tables)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select customer.name, book.title, author.auth_id, publisher.year from customer natural join book natural join author join publisher where book.isbn = 1234;
+Empty set (0.00 sec)
+
+
+
+//6
+
+6. Display the total number of books and customer name.( USE OF COUNT, ANY JOIN)
+
+MariaDB [te3149db]> select * from customer;
++------+----------+------------+----------+
+| cid  | name     | city       | class_id |
++------+----------+------------+----------+
+| 1338 | aditya   | Pune       |        3 |
+| 1383 | mandar   | Pune       |        2 |
+| 1482 | sanket   | Pune       |        3 |
+| 1992 | shruti   | Ahmedabad  |        2 |
+| 2234 | prajakta | Pune       |        2 |
+| 2343 | pratik   | Pune       |        3 |
+| 4238 | amey     | Pune       |        3 |
+| 8823 | daksh    | Pune       |        1 |
+| 8888 | Blah     | Pune       |        1 |
+| 9999 | rajan    | Ahmednagar |        1 |
++------+----------+------------+----------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select customer.name, count(order1.qty) from customer natural join order1 group by(customer.name);
++----------+------+
+| name     | qty  |
++----------+------+
+| aditya   |    2 |
+| amey     |   13 |
+| daksh    |   10 |
+| mandar   |   10 |
+| prajakta |    3 |
+| pratik   |    2 |
+| sanket   |   15 |
+| shruti   |    1 |
++----------+------+
+8 rows in set (0.00 sec)
+
+
+//7
+7. List the cust_id, order_no and ISBN with books having title 'mysql'. (sub query- IN)
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select t.cid, t.order_no, t.isbn from (select order1.cid, order1.order_no, book.isbn, book.title from order1 natural join book) as t where t.title in ("mysql");
+Empty set (0.00 sec)
+
+//8
+
+8. Find the names of all the companies that ordered books in the year 2015. (sub query, Between)
+
+MariaDB [te3149db]> select * from customer;
++------+----------+------------+----------+
+| cid  | name     | city       | class_id |
++------+----------+------------+----------+
+| 1338 | aditya   | Pune       |        3 |
+| 1383 | mandar   | Pune       |        2 |
+| 1482 | sanket   | Pune       |        3 |
+| 1992 | shruti   | Ahmedabad  |        2 |
+| 2234 | prajakta | Pune       |        2 |
+| 2343 | pratik   | Pune       |        3 |
+| 4238 | amey     | Pune       |        3 |
+| 8823 | daksh    | Pune       |        1 |
+| 8888 | Blah     | Pune       |        1 |
+| 9999 | rajan    | Ahmednagar |        1 |
++------+----------+------------+----------+
+10 rows in set (0.00 sec)
+
+
+MariaDB [te3149db]> select * from order1;
++----------+------+------+------+------------+
+| order_no | cid  | isbn | qty  | date1      |
++----------+------+------+------+------------+
+|        2 | 1338 | 5565 |    2 | 2018-10-10 |
+|        3 | 1383 | 5565 |   10 | 2018-08-20 |
+|        4 | 1482 | 5572 |   15 | 2018-04-20 |
+|        5 | 1992 | 5568 |    1 | 2014-04-20 |
+|        7 | 2343 | 5570 |    2 | 2014-09-14 |
+|        8 | 8823 | 5598 |   10 | 2014-09-14 |
+|        9 | 4238 | 5571 |   13 | 2014-10-01 |
+|       10 | 2234 | 5572 |    3 | 2016-10-01 |
++----------+------+------+------+------------+
+8 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+MariaDB [te3149db]> select t.name from (select customer.name, order1.order_no, book.year from customer natural join order1 natural join book) as t where t.year = 2015;Empty set (0.00 sec)
+
+
+
+//9
+
+9. Create view showing the professor and shift details. (COMPLEX VIEW)
+
+MariaDB [te3149db]> select * from author;
++---------+------------+---------+
+| auth_id | aname      | country |
++---------+------------+---------+
+|      10 | JKRowling  | England |
+|      20 | S. Hawking | England |
+|      30 | Amish T.   | Brazil  |
+|      40 | Chetan B.  | Brazil  |
+|      50 | Dan Brown  | Brazil  |
+|      60 | John G.    | England |
+|      70 | HELLO      | USA     |
+|      80 | HELLO      | USA     |
+|      90 | HELLO      | USA     |
+|     100 | Micheal W. | Canada  |
++---------+------------+---------+
+10 rows in set (0.01 sec)
+
+MariaDB [te3149db]> select * from book;
++------+---------------------+---------+------+------+-------+
+| isbn | title               | auth_id | p_no | year | price |
++------+---------------------+---------+------+------+-------+
+| 5564 | B. history of time  |      20 |   14 | 1997 |   105 |
+| 5565 | Br. history of time |      20 |   14 | 1997 |   105 |
+| 5567 | Mystery             |      60 |   11 | 1993 |   210 |
+| 5568 | Flattered           |      60 |   12 | 1994 |   210 |
+| 5569 | Delimiter           |      20 |   16 | 1995 |   105 |
+| 5570 | Fire                |      80 |   15 | 2001 |  1260 |
+| 5571 | Water               |     100 |   20 | 2002 |  1260 |
+| 5572 | H P                 |      10 |   15 | 2012 | 136.5 |
+| 5573 | Secret              |      70 |   19 | 1899 |  1260 |
+| 5598 | Oath of V.          |      40 |   12 | 2004 |  1365 |
++------+---------------------+---------+------+------+-------+
+10 rows in set (0.00 sec)
+
+
+10. Perform Manipulation on simple view-Insert, update, delete, drop view.
+
+
+
+MariaDB [te3149db]> create view comp_view_10 as (select author.*, book.isbn, book.title, book.p_no, book.year, book.price from author natural join book);
+
+MariaDB [te3149db]> select * from comp_view_10;
++---------+------------+---------+------+---------------------+------+------+-------+
+| auth_id | aname      | country | isbn | title               | p_no | year | price |
++---------+------------+---------+------+---------------------+------+------+-------+
+|      20 | S. Hawking | England | 5564 | B. history of time  |   14 | 1997 |   105 |
+|      20 | S. Hawking | England | 5565 | Br. history of time |   14 | 1997 |   105 |
+|      60 | John G.    | England | 5567 | Mystery             |   11 | 1993 |   210 |
+|      60 | John G.    | England | 5568 | Flattered           |   12 | 1994 |   210 |
+|      20 | S. Hawking | England | 5569 | Delimiter           |   16 | 1995 |   105 |
+|      80 | HELLO      | USA     | 5570 | Fire                |   15 | 2001 |  1260 |
+|     100 | Micheal W. | Canada  | 5571 | Water               |   20 | 2002 |  1260 |
+|      10 | JKRowling  | England | 5572 | H P                 |   15 | 2012 | 136.5 |
+|      70 | HELLO      | USA     | 5573 | Secret              |   19 | 1899 |  1260 |
+|      40 | Chetan B.  | Brazil  | 5598 | Oath of V.          |   12 | 2004 |  1365 |
++---------+------------+---------+------+---------------------+------+------+-------+
+10 rows in set (0.00 sec)
+
+// 10
+MariaDB [te3149db]> create view simple_view as select * from customer;
+Query OK, 0 rows affected (0.03 sec)
+
+MariaDB [te3149db]> select * from simple_view;
++------+----------+------------+----------+
+| cid  | name     | city       | class_id |
++------+----------+------------+----------+
+| 1338 | aditya   | Pune       |        3 |
+| 1383 | mandar   | Pune       |        2 |
+| 1482 | sanket   | Pune       |        3 |
+| 1992 | shruti   | Ahmedabad  |        2 |
+| 2234 | prajakta | Pune       |        2 |
+| 2324 | jay      | Mumbai     |        1 |
+| 2343 | pratik   | Pune       |        3 |
+| 4238 | amey     | Pune       |        3 |
+| 8823 | daksh    | Pune       |        1 |
+| 9999 | rajan    | Ahmednagar |        2 |
++------+----------+------------+----------+
+10 rows in set (0.00 sec)
+
+MariaDB [te3149db]> insert into simple_view values(8888, "Blah", "Pune", 1);
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [te3149db]> update simple_view set class_id = 1 where city="Ahmednagar";
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [te3149db]> delete from simple_view where city = "Mumbai";
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [te3149db]> drop view simple_view;
+Query OK, 0 rows affected (0.00 sec)
+
