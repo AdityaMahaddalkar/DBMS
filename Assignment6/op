@@ -1,0 +1,176 @@
+update employee set date1 = to_date('20-08-2018', 'DD-MM-YYYY') where eid=2000;
+## Explicit
+declare 
+   id employee.eid%type;
+   pro employee.project%type;
+   cursor my_cur is select eid, project from employee   
+   where status='C';
+   begin
+   open my_cur;
+   loop
+   fetch my_cur into id, pro;
+   exit when my_cur%NOTFOUND;
+   insert into incentive_list values(id, pro);
+   end loop;
+   close my_cur;
+   end;
+   /
+## Parameterized
+
+create or replace procedure parameterized_cursor(id1 number) as
+cursor my_cur(id1 number) is select eid, project from employee
+where eid=id1 and status='N';
+id number(4);
+pro varchar2(20);
+begin
+open my_cur(id1);
+loop
+fetch my_cur into id, pro;
+exit when my_cur%NOTFOUND;
+insert into incentive_list values(id, pro);
+end loop;
+close my_cur;
+end;
+
+## Implicit cursor
+begin
+   insert into incentive_list 
+   select eid, project 
+   from employee where status='C';
+   if sql%notfound then
+   dbms_output.put_line('Data Not Found');
+   end if;
+   end;
+   /
+   
+## For loop cursor
+create or replace procedure cursorforloop is
+cursor for_loop is select eid,project from employee where status='N';
+begin
+for record in for_loop
+loop
+        dbms_output.put_line('In');
+        insert into pending_list values(record.eid,record.project);
+end loop;
+
+exception
+	when no_data_found then 
+		dbms_output.put_line('Already confirmed complete');
+
+	
+end;
+/
+
+
+//////////////---------------------OUTPUT------------------///////////////////
+/////////////----------------------------------------------//////////////////
+////////////-----------------------------------------------/////////////////
+
+
+## Implicit trigger
+
+SQL> begin
+   insert into incentive_list 
+   select eid, project 
+   from employee where status='C';
+   if sql%notfound then
+   dbms_output.put_line('Data Not Found');
+   end if;
+   end;
+   /  2    3    4    5    6    7    8    9  
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from incentive_list;
+
+       EID PROJECT
+---------- --------------------
+      1000 Database Mgmt
+      4000 AI
+      5000 NLP
+
+
+## Explicit trigger
+
+SQL> declare 
+   id employee.eid%type;
+   pro employee.project%type;
+   cursor my_cur is select eid, project from employee   
+   where status='C';
+   begin
+   open my_cur;
+   loop
+   fetch my_cur into id, pro;
+   exit when my_cur%NOTFOUND;
+   insert into incentive_list values(id, pro);
+   end loop;
+   close my_cur;
+   end;
+   /  2    3    4    5    6    7    8    9   10   11   12   13   14   15  
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from incentive_list;
+
+       EID PROJECT
+---------- --------------------
+      1000 Database Mgmt
+      4000 AI
+      5000 NLP
+
+## Parameterized Cursor
+
+
+SQL> create or replace procedure parameterized_cursor(id1 number) as
+cursor my_cur(id1 number) is select eid, project from employee
+where eid=id1 and status='N';
+id number(4);
+pro varchar2(20);
+begin
+open my_cur(id1);
+loop
+fetch my_cur into id, pro;
+exit when my_cur%NOTFOUND;
+insert into pending_list values(id, pro);
+end loop;
+close my_cur;
+end;  2    3    4    5    6    7    8    9   10   11   12   13   14  
+ 15  /
+
+Procedure created.
+
+SQL> exec parameterized_cursor(3000);
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from pending_list;
+
+       EID PROJECT
+---------- --------------------
+      3000 Android
+
+
+## For loop cursor
+
+create or replace procedure for_loop_cursor is
+declare
+cursor for_loop is select eid,project from employee where status='N';
+begin
+for record in for_loop
+loop
+insert into pending_list values(record.eid,record.project);
+end loop;
+end;
+/
+
+SQL> exec for_loop_cursor;
+
+
+SQL> select * from pending_list;
+
+       EID PROJECT
+---------- --------------------
+      2000 Networking
+      3000 Android
+      6000 HPC
+
