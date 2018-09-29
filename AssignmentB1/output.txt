@@ -1,0 +1,51 @@
+# Create
+
+> db.createCollection('housing')
+{ "ok" : 1 }
+
+
+> db.housing.find()
+
+# Insert
+
+> db.housing.insert({'location':'Pune', 'price':1000000, 'houseNumber':'221B'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Pune', 'price':1500000, 'houseNumber':'221C'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Pune', 'price':1200000, 'houseNumber':'221D'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Pune', 'price':1200000, 'houseNumber':'221E'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Pune', 'price':2200000, 'houseNumber':'231A'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Mumbai', 'price':3200000, 'houseNumber':'441C'})
+WriteResult({ "nInserted" : 1 })
+> db.housing.insert({'location':'Mumbai', 'price':32300000, 'houseNumber':'441D'})
+WriteResult({ "nInserted" : 1 })
+
+# Find
+
+> db.housing.find()
+{ "_id" : ObjectId("5b87a0f42563860a710ff30b"), "location" : "Pune", "price" : 1000000, "houseNumber" : "221B" }
+{ "_id" : ObjectId("5b87a0fd2563860a710ff30c"), "location" : "Pune", "price" : 1500000, "houseNumber" : "221C" }
+{ "_id" : ObjectId("5b87a1042563860a710ff30d"), "location" : "Pune", "price" : 1200000, "houseNumber" : "221D" }
+{ "_id" : ObjectId("5b87a10b2563860a710ff30e"), "location" : "Pune", "price" : 1200000, "houseNumber" : "221E" }
+{ "_id" : ObjectId("5b87a1132563860a710ff30f"), "location" : "Pune", "price" : 2200000, "houseNumber" : "231A" }
+{ "_id" : ObjectId("5b87a1222563860a710ff310"), "location" : "Mumbai", "price" : 3200000, "houseNumber" : "441C" }
+{ "_id" : ObjectId("5b87a12c2563860a710ff311"), "location" : "Mumbai", "price" : 32300000, "houseNumber" : "441D" }
+
+# Update
+
+> db.housing.update({houseNumber:"441D"}, { $set : {'price':3300000}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.housing.update({'houseNumber':'231A'}, {$set : {'location': 'Pune'}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 0 })
+
+# Remove
+
+> db.housing.remove({houseNumber: {$eq:'441D'}})
+WriteResult({ "nRemoved" : 1 })
+> db.housing.remove({houseNumber: {$eq:'441C'}})
+WriteResult({ "nRemoved" : 1 })
+
+
