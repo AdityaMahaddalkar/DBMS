@@ -1,0 +1,420 @@
+## Queries on arrays and array of embedded documents
+
+1. ## Add 5 to all cities' temperatures
+
+> db.WeatherData.update({}, {$inc : {'temperature.f':5}}, {'multi':true});
+WriteResult({ "nMatched" : 10, "nUpserted" : 0, "nModified" : 10 })
+
+> db.WeatherData.find()
+{ "_id" : ObjectId("5b87a4ea2563860a710ff312"), "place" : "Pune", "coordinates" : [ 8.07, 4.88 ], "temperature" : { "c" : 27, "f" : 72 }, "atmosphere" : [ { "humidity" : 40, "precipitation" : 30 }, { "windSpeed" : 20, "windDirection" : "NE" } ], "lightning" : "N", "sky" : "sunny", "humidity" : 35 }
+{ "_id" : ObjectId("5b87a5542563860a710ff313"), "place" : "Mumbai", "coordinates" : [ 8.99, 4.7 ], "temperature" : { "c" : 19, "f" : 55 }, "atmosphere" : [ { "humidity" : 60, "precipitation" : 50 }, { "windSpeed" : 10, "windDirection" : "E" } ], "lightning" : "Y", "sky" : "rainy" }
+{ "_id" : ObjectId("5b87a5d22563860a710ff314"), "place" : "Mahabaleshwar", "coordinates" : [ 7.88, 4.55 ], "temperature" : { "c" : 21, "f" : 60 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 }, { "windSpeed" : 35, "windDirection" : "SW" } ], "lightning" : "N", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a6172563860a710ff315"), "place" : "Agra", "coordinates" : [ 17.8, 6 ], "temperature" : { "c" : 21.4, "f" : 62 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87a65b2563860a710ff316"), "place" : "Bhopal", "coordinates" : [ 27, 16 ], "temperature" : { "c" : 27.8, "f" : 73 }, "atmosphere" : [ { "humidity" : 11, "precipitation" : 20 } ], "lightning" : "N", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 84 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy", "humidity" : 35 }
+{ "_id" : ObjectId("5b87a7172563860a710ff318"), "place" : "Dispur", "coordinates" : [ 17.88, 18.9 ], "temperature" : { "c" : 10, "f" : 35 }, "atmosphere" : [ { "humidity" : 15, "precipitation" : 10 } ], "lightning" : "N", "sky" : "hazy" }
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 55 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87b5112a6023107b696e78"), "place" : "Gangtok", "coordinates" : [ 13.44, 15.44 ], "temperature" : { "f" : 5 } }
+{ "_id" : ObjectId("5b90e5f3eeea9bee47f1d42b"), "place" : "Kanyakumari", "coordinates" : [ 2.34, 11.11 ], "temperature" : { "c" : 40, "f" : 84 } }
+> 
+
+
+2. ## Mul 2.8 to wind speed to city with name Pune
+
+> db.WeatherData.update({'place': 'Pune'},{$mul : {'atmosphere.1.windSpeed':2.8}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.WeatherData.find({'place':'Pune'})
+{ "_id" : ObjectId("5b87a4ea2563860a710ff312"), "place" : "Pune", "coordinates" : [ 8.07, 4.88 ], "temperature" : { "c" : 27, "f" : 72 }, "atmosphere" : [ { "humidity" : 40, "precipitation" : 30 }, { "windSpeed" : 56, "windDirection" : "NE" } ], "lightning" : "N", "sky" : "sunny", "humidity" : 35 }
+> 
+
+3. ## Using aggregation operator $unwind on atmosphere
+
+> db.WeatherData.aggregate({$unwind: '$atmosphere'}).pretty()
+{
+	"_id" : ObjectId("5b87a4ea2563860a710ff312"),
+	"place" : "Pune",
+	"coordinates" : [
+		8.07,
+		4.88
+	],
+	"temperature" : {
+		"c" : 27,
+		"f" : 72
+	},
+	"atmosphere" : {
+		"humidity" : 40,
+		"precipitation" : 30
+	},
+	"lightning" : "N",
+	"sky" : "sunny",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a4ea2563860a710ff312"),
+	"place" : "Pune",
+	"coordinates" : [
+		8.07,
+		4.88
+	],
+	"temperature" : {
+		"c" : 27,
+		"f" : 72
+	},
+	"atmosphere" : {
+		"windSpeed" : 56,
+		"windDirection" : "NE"
+	},
+	"lightning" : "N",
+	"sky" : "sunny",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a5542563860a710ff313"),
+	"place" : "Mumbai",
+	"coordinates" : [
+		8.99,
+		4.7
+	],
+	"temperature" : {
+		"c" : 19,
+		"f" : 55
+	},
+	"atmosphere" : {
+		"humidity" : 60,
+		"precipitation" : 50
+	},
+	"lightning" : "Y",
+	"sky" : "rainy"
+}
+{
+	"_id" : ObjectId("5b87a5542563860a710ff313"),
+	"place" : "Mumbai",
+	"coordinates" : [
+		8.99,
+		4.7
+	],
+	"temperature" : {
+		"c" : 19,
+		"f" : 55
+	},
+	"atmosphere" : {
+		"windSpeed" : 10,
+		"windDirection" : "E"
+	},
+	"lightning" : "Y",
+	"sky" : "rainy"
+}
+{
+	"_id" : ObjectId("5b87a5d22563860a710ff314"),
+	"place" : "Mahabaleshwar",
+	"coordinates" : [
+		7.88,
+		4.55
+	],
+	"temperature" : {
+		"c" : 21,
+		"f" : 60
+	},
+	"atmosphere" : {
+		"humidity" : 50,
+		"precipitation" : 70
+	},
+	"lightning" : "N",
+	"sky" : "cloudy"
+}
+{
+	"_id" : ObjectId("5b87a5d22563860a710ff314"),
+	"place" : "Mahabaleshwar",
+	"coordinates" : [
+		7.88,
+		4.55
+	],
+	"temperature" : {
+		"c" : 21,
+		"f" : 60
+	},
+	"atmosphere" : {
+		"windSpeed" : 35,
+		"windDirection" : "SW"
+	},
+	"lightning" : "N",
+	"sky" : "cloudy"
+}
+{
+	"_id" : ObjectId("5b87a6172563860a710ff315"),
+	"place" : "Agra",
+	"coordinates" : [
+		17.8,
+		6
+	],
+	"temperature" : {
+		"c" : 21.4,
+		"f" : 62
+	},
+	"atmosphere" : {
+		"humidity" : 50,
+		"precipitation" : 70
+	},
+	"lightning" : "N",
+	"sky" : "sunny"
+}
+{
+	"_id" : ObjectId("5b87a65b2563860a710ff316"),
+	"place" : "Bhopal",
+	"coordinates" : [
+		27,
+		16
+	],
+	"temperature" : {
+		"c" : 27.8,
+		"f" : 73
+	},
+	"atmosphere" : {
+		"humidity" : 11,
+		"precipitation" : 20
+	},
+	"lightning" : "N",
+	"sky" : "cloudy"
+}
+{
+	"_id" : ObjectId("5b87a6ba2563860a710ff317"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		7.88,
+		10
+	],
+	"temperature" : {
+		"c" : 35,
+		"f" : 84
+	},
+	"atmosphere" : {
+		"humidity" : 30,
+		"precipitation" : 79
+	},
+	"lightning" : "Y",
+	"sky" : "cloudy",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a6ba2563860a710ff317"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		7.88,
+		10
+	],
+	"temperature" : {
+		"c" : 35,
+		"f" : 84
+	},
+	"atmosphere" : {
+		"windSpeed" : 14,
+		"windDirection" : "N"
+	},
+	"lightning" : "Y",
+	"sky" : "cloudy",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a7172563860a710ff318"),
+	"place" : "Dispur",
+	"coordinates" : [
+		17.88,
+		18.9
+	],
+	"temperature" : {
+		"c" : 10,
+		"f" : 35
+	},
+	"atmosphere" : {
+		"humidity" : 15,
+		"precipitation" : 10
+	},
+	"lightning" : "N",
+	"sky" : "hazy"
+}
+{
+	"_id" : ObjectId("5b87a8e62563860a710ff319"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		2.44,
+		4.44
+	],
+	"temperature" : {
+		"c" : 25,
+		"f" : 55
+	},
+	"atmosphere" : {
+		"humidity" : 55,
+		"precipitation" : 40
+	},
+	"lightning" : "N",
+	"sky" : "sunny"
+}
+{
+	"_id" : ObjectId("5b87a8e62563860a710ff319"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		2.44,
+		4.44
+	],
+	"temperature" : {
+		"c" : 25,
+		"f" : 55
+	},
+	"atmosphere" : {
+		"windSpeed" : 10,
+		"windDirection" : "NW"
+	},
+	"lightning" : "N",
+	"sky" : "sunny"
+}
+
+
+4. ## Count number of cities having temperature in c less than 30
+
+> db.WeatherData.find({'temperature.c' : {$lt : 30}}).count()
+7
+
+5. ## Sort data of cities w.r.t humidity where sky is sunny or cloudy
+
+> db.WeatherData.find({$or : [{'sky':'sunny'}, {'sky':'cloudy'}]}).sort({'atmosphere.humidity': 1}).pretty()
+{
+	"_id" : ObjectId("5b87a4ea2563860a710ff312"),
+	"place" : "Pune",
+	"coordinates" : [
+		8.07,
+		4.88
+	],
+	"temperature" : {
+		"c" : 27,
+		"f" : 72
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 40,
+			"precipitation" : 30
+		},
+		{
+			"windSpeed" : 56,
+			"windDirection" : "NE"
+		}
+	],
+	"lightning" : "N",
+	"sky" : "sunny",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a5d22563860a710ff314"),
+	"place" : "Mahabaleshwar",
+	"coordinates" : [
+		7.88,
+		4.55
+	],
+	"temperature" : {
+		"c" : 21,
+		"f" : 60
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 50,
+			"precipitation" : 70
+		},
+		{
+			"windSpeed" : 35,
+			"windDirection" : "SW"
+		}
+	],
+	"lightning" : "N",
+	"sky" : "cloudy"
+}
+{
+	"_id" : ObjectId("5b87a6ba2563860a710ff317"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		7.88,
+		10
+	],
+	"temperature" : {
+		"c" : 35,
+		"f" : 84
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 30,
+			"precipitation" : 79
+		},
+		{
+			"windSpeed" : 14,
+			"windDirection" : "N"
+		}
+	],
+	"lightning" : "Y",
+	"sky" : "cloudy",
+	"humidity" : 35
+}
+{
+	"_id" : ObjectId("5b87a8e62563860a710ff319"),
+	"place" : "Jaipur",
+	"coordinates" : [
+		2.44,
+		4.44
+	],
+	"temperature" : {
+		"c" : 25,
+		"f" : 55
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 55,
+			"precipitation" : 40
+		},
+		{
+			"windSpeed" : 10,
+			"windDirection" : "NW"
+		}
+	],
+	"lightning" : "N",
+	"sky" : "sunny"
+}
+{
+	"_id" : ObjectId("5b87a65b2563860a710ff316"),
+	"place" : "Bhopal",
+	"coordinates" : [
+		27,
+		16
+	],
+	"temperature" : {
+		"c" : 27.8,
+		"f" : 73
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 11,
+			"precipitation" : 20
+		}
+	],
+	"lightning" : "N",
+	"sky" : "cloudy"
+}
+{
+	"_id" : ObjectId("5b87a6172563860a710ff315"),
+	"place" : "Agra",
+	"coordinates" : [
+		17.8,
+		6
+	],
+	"temperature" : {
+		"c" : 21.4,
+		"f" : 62
+	},
+	"atmosphere" : [
+		{
+			"humidity" : 50,
+			"precipitation" : 70
+		}
+	],
+	"lightning" : "N",
+	"sky" : "sunny"
+}
+
