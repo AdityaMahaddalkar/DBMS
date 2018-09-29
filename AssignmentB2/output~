@@ -1,0 +1,121 @@
+## Create collection
+
+> db.createCollection('WeatherData')
+
+## Insert into collection
+
+> db.WeatherData.insert({'place': 'Pune', 'coordinates': [8.07, 4.88], 'temperature':{ 'c': 27, 'f':67}, 'atmosphere': [{'humidity': 40, 'precipitation': 30},  {'windSpeed': 20, 'windDirection': 'NE'}], 'lightning': 'N' ,'sky': 'sunny'} )
+WriteResult({ "nInserted" : 1 })
+> db.WeatherData.insert({'place': 'Mumbai', 'coordinates': [8.99, 4.70], 'temperature':{ 'c': 19, 'f':50}, 'atmosphere': [{'humidity': 60, 'precipitation': 50},  {'windSpeed': 10, 'windDirection': 'E'}], 'lightning': 'Y' ,'sky': 'rainy'} )
+WriteResult({ "nInserted" : 1 })
+>> db.WeatherData.insert({'place': 'Mahabaleshwar', 'coordinates': [7.88, 4.55], 'temperature':{ 'c': 21, 'f':55}, 'atmosphere': [{'humidity': 50, 'precipitation': 70},  {'windSpeed': 35, 'windDirection': 'SW'}], 'lightning': 'N' ,'sky': 'cloudy'} )
+WriteResult({ "nInserted" : 1 })
+> db.WeatherData.insert({'place': 'Agra', 'coordinates': [17.8, 6.00], 'temperature':{ 'c': 21.4, 'f':57}, 'atmosphere': [{'humidity': 50, 'precipitation': 70}], 'lightning': 'N' ,'sky': 'sunny'} )
+WriteResult({ "nInserted" : 1 })
+> db.WeatherData.insert({'place': 'Bhopal', 'coordinates': [27, 16.00], 'temperature':{ 'c': 27.8, 'f':68}, 'atmosphere': [{'humidity': 11, 'precipitation': 20}], 'lightning': 'N' ,'sky': 'cloudy'} )
+WriteResult({ "nInserted" : 1 })
+> db.WeatherData.insert({'place': 'Jaipur', 'coordinates': [7.88, 10], 'temperature':{ 'c': 35, 'f':79}, 'atmosphere': [{'humidity': 30, 'precipitation': 79},  {'windSpeed': 14, 'windDirection': 'N'}], 'lightning': 'Y' ,'sky': 'cloudy'} )
+WriteResult({ "nInserted" : 1 })
+> db.WeatherData.insert({'place': 'Dispur', 'coordinates': [17.88, 18.9], 'temperature':{ 'c': 10, 'f':30}, 'atmosphere': [{'humidity': 15, 'precipitation': 10} ], 'lightning': 'N' ,'sky': 'hazy'} )
+WriteResult({ "nInserted" : 1 })
+
+
+1. ## Update name = 'Banglore' where coordinates = [2.44, 4.44]
+
+> db.WeatherData.update({'coordintes': [2.44, 4.44]}, {$set : {'place': 'Banglore'}})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> 
+
+
+2. ## Find cities with windSpeed < 30
+
+> db.WeatherData.find({'atmosphere.windSpeed' : {$lt : 30}})
+
+{ "_id" : ObjectId("5b87a4ea2563860a710ff312"), "place" : "Pune", "coordinates" : [ 8.07, 4.88 ], "temperature" : { "c" : 27, "f" : 67 }, "atmosphere" : [ { "humidity" : 40, "precipitation" : 30 }, { "windSpeed" : 20, "windDirection" : "NE" } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87a5542563860a710ff313"), "place" : "Mumbai", "coordinates" : [ 8.99, 4.7 ], "temperature" : { "c" : 19, "f" : 50 }, "atmosphere" : [ { "humidity" : 60, "precipitation" : 50 }, { "windSpeed" : 10, "windDirection" : "E" } ], "lightning" : "Y", "sky" : "rainy" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 79 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 50 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+> 
+
+
+3. ## Find cities with coordinates either 7.88 or 10
+
+> db.WeatherData.find({'coordinates' : {$in: [7.88, 10]}})
+
+{ "_id" : ObjectId("5b87a5d22563860a710ff314"), "place" : "Mahabaleshwar", "coordinates" : [ 7.88, 4.55 ], "temperature" : { "c" : 21, "f" : 55 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 }, { "windSpeed" : 35, "windDirection" : "SW" } ], "lightning" : "N", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 79 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy" }
+> 
+
+4. ## Find cities with humidity less than 60 and greater than 20
+
+> db.WeatherData.find({'atmosphere.humidity': {$gt : 20, $lt : 60}})
+
+
+{ "_id" : ObjectId("5b87a4ea2563860a710ff312"), "place" : "Pune", "coordinates" : [ 8.07, 4.88 ], "temperature" : { "c" : 27, "f" : 67 }, "atmosphere" : [ { "humidity" : 40, "precipitation" : 30 }, { "windSpeed" : 20, "windDirection" : "NE" } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87a5d22563860a710ff314"), "place" : "Mahabaleshwar", "coordinates" : [ 7.88, 4.55 ], "temperature" : { "c" : 21, "f" : 55 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 }, { "windSpeed" : 35, "windDirection" : "SW" } ], "lightning" : "N", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a6172563860a710ff315"), "place" : "Agra", "coordinates" : [ 17.8, 6 ], "temperature" : { "c" : 21.4, "f" : 57 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 79 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 50 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+
+
+5. ## Update cites set humidity = 35 where humidity less than 50 and greater than 20
+## Multiple update
+
+> db.WeatherData.update({'atmosphere.humidity': {$lt: 50, $gt: 20}}, {$set: {'humidity': 35}}, {multi: true})
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 2 })
+> 
+
+
+6. ## Update cities set place equals Gangtok where place is Darjeeling( upsert example )
+
+> db.WeatherData.update({'place': 'Darjeeling'},
+... {'place': 'Gangtok', 'coordinates': [13.44, 15.44]},
+... {multi:true, upsert: true})
+
+WriteResult({
+	"nMatched" : 0,
+	"nUpserted" : 1,
+	"nModified" : 0,
+	"_id" : ObjectId("5b87b5112a6023107b696e78")
+})
+
+
+7. ## Find cities where windSpeed is 10 or windDirection is N
+
+> db.WeatherData.find({$or : [{'atmosphere.windSpeed': 10}, {'atmosphere.windDirection': 'N'}]})
+
+{ "_id" : ObjectId("5b87a5542563860a710ff313"), "place" : "Mumbai", "coordinates" : [ 8.99, 4.7 ], "temperature" : { "c" : 19, "f" : 50 }, "atmosphere" : [ { "humidity" : 60, "precipitation" : 50 }, { "windSpeed" : 10, "windDirection" : "E" } ], "lightning" : "Y", "sky" : "rainy" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 79 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy", "humidity" : 35 }
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 50 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+
+
+8. ## Find cities where temperature in c is 25 and f is 50
+
+> db.WeatherData.find({$and: [{'temperature.c': 25}, {'temperature.f': 50}]})
+
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 50 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+> 
+
+
+9. ## Find cities where coordinates not in [4.55 , 2.33]
+
+> db.WeatherData.find({'coordinates': {$nin: [4.55, 2.33]}})
+
+
+{ "_id" : ObjectId("5b87a4ea2563860a710ff312"), "place" : "Pune", "coordinates" : [ 8.07, 4.88 ], "temperature" : { "c" : 27, "f" : 67 }, "atmosphere" : [ { "humidity" : 40, "precipitation" : 30 }, { "windSpeed" : 20, "windDirection" : "NE" } ], "lightning" : "N", "sky" : "sunny", "humidity" : 35 }
+{ "_id" : ObjectId("5b87a5542563860a710ff313"), "place" : "Mumbai", "coordinates" : [ 8.99, 4.7 ], "temperature" : { "c" : 19, "f" : 50 }, "atmosphere" : [ { "humidity" : 60, "precipitation" : 50 }, { "windSpeed" : 10, "windDirection" : "E" } ], "lightning" : "Y", "sky" : "rainy" }
+{ "_id" : ObjectId("5b87a6172563860a710ff315"), "place" : "Agra", "coordinates" : [ 17.8, 6 ], "temperature" : { "c" : 21.4, "f" : 57 }, "atmosphere" : [ { "humidity" : 50, "precipitation" : 70 } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87a65b2563860a710ff316"), "place" : "Bhopal", "coordinates" : [ 27, 16 ], "temperature" : { "c" : 27.8, "f" : 68 }, "atmosphere" : [ { "humidity" : 11, "precipitation" : 20 } ], "lightning" : "N", "sky" : "cloudy" }
+{ "_id" : ObjectId("5b87a6ba2563860a710ff317"), "place" : "Jaipur", "coordinates" : [ 7.88, 10 ], "temperature" : { "c" : 35, "f" : 79 }, "atmosphere" : [ { "humidity" : 30, "precipitation" : 79 }, { "windSpeed" : 14, "windDirection" : "N" } ], "lightning" : "Y", "sky" : "cloudy", "humidity" : 35 }
+{ "_id" : ObjectId("5b87a7172563860a710ff318"), "place" : "Dispur", "coordinates" : [ 17.88, 18.9 ], "temperature" : { "c" : 10, "f" : 30 }, "atmosphere" : [ { "humidity" : 15, "precipitation" : 10 } ], "lightning" : "N", "sky" : "hazy" }
+{ "_id" : ObjectId("5b87a8e62563860a710ff319"), "place" : "Jaipur", "coordinates" : [ 2.44, 4.44 ], "temperature" : { "c" : 25, "f" : 50 }, "atmosphere" : [ { "humidity" : 55, "precipitation" : 40 }, { "windSpeed" : 10, "windDirection" : "NW" } ], "lightning" : "N", "sky" : "sunny" }
+{ "_id" : ObjectId("5b87b5112a6023107b696e78"), "place" : "Gangtok", "coordinates" : [ 13.44, 15.44 ] }
+> 
+
+10. ## Save city
+
+> db.WeatherData.save({'place':'Kanyakumari', 'coordinates':[2.34, 11.11],
+... 'temperature':{'c':40, 'f':79}})
+WriteResult({ "nInserted" : 1 })
+> 
+
