@@ -1,0 +1,215 @@
+## Collection description
+
+> db.GalaxyCluster.find().pretty()
+{
+	"_id" : ObjectId("5b9f6f24bcdb68f44b8bb0df"),
+	"cluster_name" : "P48823",
+	"location" : {
+		"grad" : 3.2243,
+		"au" : 2000,
+		"angle" : 90.3
+	},
+	"dark_matter_density" : 0.85,
+	"dark_energy_capacity" : 500
+}
+{
+	"_id" : ObjectId("5b9f6f58bcdb68f44b8bb0e0"),
+	"cluster_name" : "PS2344",
+	"location" : {
+		"grad" : 6.243,
+		"au" : 12000,
+		"angle" : 15.89
+	},
+	"dark_matter_density" : 0.882,
+	"dark_energy_capacity" : 250
+}
+{
+	"_id" : ObjectId("5b9f6f7cbcdb68f44b8bb0e1"),
+	"cluster_name" : "HS9982",
+	"location" : {
+		"grad" : 17.243,
+		"au" : 18830,
+		"angle" : 159.88
+	},
+	"dark_matter_density" : 0.821,
+	"dark_energy_capacity" : 540
+}
+{
+	"_id" : ObjectId("5b9f6fb2bcdb68f44b8bb0e2"),
+	"cluster_name" : "HS9443",
+	"location" : {
+		"grad" : 1.243,
+		"au" : 2830,
+		"angle" : 59.88
+	},
+	"dark_matter_density" : 0.91,
+	"dark_energy_capacity" : 100
+}
+{
+	"_id" : ObjectId("5b9f6fd0bcdb68f44b8bb0e3"),
+	"cluster_name" : "HS9003",
+	"location" : {
+		"grad" : 24.3,
+		"au" : 28300,
+		"angle" : 55.9
+	},
+	"dark_matter_density" : 0.51,
+	"dark_energy_capacity" : 1000
+}
+{
+	"_id" : ObjectId("5b9f6fefbcdb68f44b8bb0e4"),
+	"cluster_name" : "Milky Way",
+	"location" : {
+		"grad" : 180,
+		"au" : 28,
+		"angle" : 90
+	},
+	"dark_matter_density" : 0.61,
+	"dark_energy_capacity" : 100
+}
+{
+	"_id" : ObjectId("5b9f702dbcdb68f44b8bb0e5"),
+	"cluster_name" : "Andromeda",
+	"location" : {
+		"grad" : 1.299,
+		"au" : 290,
+		"angle" : 4.343
+	},
+	"dark_matter_density" : 0.533,
+	"dark_energy_capacity" : 150
+}
+{
+	"_id" : ObjectId("5b9f7062bcdb68f44b8bb0e6"),
+	"cluster_name" : "Cat's Eye",
+	"location" : {
+		"grad" : 167.9,
+		"au" : 29330,
+		"angle" : 43.43
+	},
+	"dark_matter_density" : 0.332,
+	"dark_energy_capacity" : 1233
+}
+{
+	"_id" : ObjectId("5b9f7108bcdb68f44b8bb0e7"),
+	"cluster_name" : "MK5502",
+	"location" : {
+		"grad" : 16.9,
+		"au" : 182993,
+		"angle" : 4.366
+	},
+	"dark_matter_density" : 0.932,
+	"dark_energy_capacity" : 123
+}
+{
+	"_id" : ObjectId("5b9f7129bcdb68f44b8bb0e8"),
+	"cluster_name" : "LS4423",
+	"location" : {
+		"grad" : 134.9,
+		"au" : 900,
+		"angle" : 46.6
+	},
+	"dark_matter_density" : 0.92,
+	"dark_energy_capacity" : 10
+}
+{
+	"_id" : ObjectId("5ba34ff142c2e9716a17d254"),
+	"cluster_name" : "LS4423",
+	"location" : {
+		"grad" : 134.9,
+		"au" : 800,
+		"angle" : 49
+	},
+	"dark_matter_density" : 0.55,
+	"dark_energy_capacity" : 90
+}
+{
+	"_id" : ObjectId("5ba3501542c2e9716a17d255"),
+	"cluster_name" : "MK5502",
+	"location" : {
+		"grad" : 134.9,
+		"au" : 1230,
+		"angle" : 49
+	},
+	"dark_matter_density" : 0.23,
+	"dark_energy_capacity" : 180
+}
+{
+	"_id" : ObjectId("5ba3502e42c2e9716a17d256"),
+	"cluster_name" : "Andromeda",
+	"location" : {
+		"grad" : 134.9,
+		"au" : 1230,
+		"angle" : 49
+	},
+	"dark_matter_density" : 0.44,
+	"dark_energy_capacity" : 80
+}
+> 
+
+
+
+1. ## Find total dark energy capacity of galaxies
+
+> db.GalaxyCluster.mapReduce(
+... function(){ emit( this.cluster_name, this.dark_energy_capacity ); },
+... function( key, values) { return Array.sum( values )},
+... {
+... out : 'Total_de'}
+... )
+{
+	"result" : "Total_de",
+	"timeMillis" : 21,
+	"counts" : {
+		"input" : 13,
+		"emit" : 13,
+		"reduce" : 3,
+		"output" : 10
+	},
+	"ok" : 1
+}
+> db.Total_de.find()
+{ "_id" : "Andromeda", "value" : 230 }
+{ "_id" : "Cat's Eye", "value" : 1233 }
+{ "_id" : "HS9003", "value" : 1000 }
+{ "_id" : "HS9443", "value" : 100 }
+{ "_id" : "HS9982", "value" : 540 }
+{ "_id" : "LS4423", "value" : 100 }
+{ "_id" : "MK5502", "value" : 303 }
+{ "_id" : "Milky Way", "value" : 100 }
+{ "_id" : "P48823", "value" : 500 }
+{ "_id" : "PS2344", "value" : 250 }
+> 
+
+2. ## Find dark matter density w.r.t au
+
+> var mapFunc = function(){
+... emit( this.location.au, this.dark_matter_density);}
+> var reduceFunc = function( key, value){
+... return Array.sum(value);}
+> db.GalaxyCluster.mapReduce(mapFunc, reduceFunc, {out : 'Differencing_wrt_au'})
+
+{
+	"result" : "Differencing_wrt_au",
+	"timeMillis" : 3,
+	"counts" : {
+		"input" : 13,
+		"emit" : 13,
+		"reduce" : 1,
+		"output" : 12
+	},
+	"ok" : 1
+}
+> db.Differencing_wrt_au.find()
+{ "_id" : 28, "value" : 0.61 }
+{ "_id" : 290, "value" : 0.533 }
+{ "_id" : 800, "value" : 0.55 }
+{ "_id" : 900, "value" : 0.92 }
+{ "_id" : 1230, "value" : 0.67 }
+{ "_id" : 2000, "value" : 0.85 }
+{ "_id" : 2830, "value" : 0.91 }
+{ "_id" : 12000, "value" : 0.882 }
+{ "_id" : 18830, "value" : 0.821 }
+{ "_id" : 28300, "value" : 0.51 }
+{ "_id" : 29330, "value" : 0.332 }
+{ "_id" : 182993, "value" : 0.932 }
+
